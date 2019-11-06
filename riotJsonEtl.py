@@ -34,7 +34,7 @@ with open(JSON_EXTRACT_FILE, 'r') as json_read:
     jsd = json.load(json_read)
 
 # jsd = "json dictionary"
-type(jsd)
+#type(jsd)
 # returns "dict"
 
 # what are the keys (a dict has "key : value" pairs):
@@ -45,10 +45,54 @@ type(jsd)
    , 'teams', 'participants', 'gameDuration', 'gameCreation'
 ]
 """
+''' placed for visual reference
+df_players = pd.DataFrame( {} ) - make empty data frame
+for item in partIds: - place info row by row
+    df_players = df_players.append(pd.DataFrame( item['player'], index=[ item['participantId'] ] ) )
+'''
+
 # Notice that one of the keys is: participantIdentities
 # Use the key "participantIdentnties" to extract/isolate its dict value/"payload"
 partIds = jsd['participantIdentities']
-
+'''
+#expanded upon above command to include other keys
+seaId = jsd['seasonId']
+df_seaId = pd.DataFrame( {} )
+#not list, no keys print(seaId[0].keys())
+queId = jsd['queueId']
+df_queId = pd.DataFrame( {} )
+#not list, no keys print(queId[0].keys())
+gameId = jsd['gameId']
+df_gameId = pd.DataFrame( {} )
+#not list, no keys print(gameId[0].keys())
+gVers = jsd['gameVersion']
+df_gVers = pd.DataFrame( {} )
+#not list, no keys print(gVers[0].keys())
+platId = jsd['platformId']
+df_platId = pd.DataFrame( {} )
+#not list, no keys print(platId[0].keys())
+gMode = jsd['gameMode']
+df_gMode = pd.DataFrame( {} )
+#not list, no keys print(gMode[0].keys())
+mapId = jsd['mapId']
+df_mapId = pd.DataFrame( {} )
+print(mapId[0].keys())
+gType = jsd['gameType']
+df_gType = pd.DataFrame( {} )
+print(gType[0].keys())
+teams = jsd['teams']
+df_teams = pd.DataFrame( {} )
+print(teams[0].keys())
+partics = jsd['participants']
+df_partics = pd.DataFrame( {} )
+print(partics[0].keys())
+gDura = jsd['gameDuration']
+df_gDura = pd.DataFrame( {} )
+print(gDura[0].keys())
+gCrea = jsd['gameCreation']
+df_gCrea = pd.DataFrame( {} )
+print(gCrea[0].keys())
+'''
 #type(partIds)
 # list
 
@@ -65,15 +109,14 @@ partIds = jsd['participantIdentities']
 #type( partIds[0]['participantId'] )
 # int
 
-partIds[0]
+#partIds[0]
 
 # initialize empty DataFrame to accumulate players row-by-row:
 df_players = pd.DataFrame( {} )
 for item in partIds:
 #    print(item['participantId'])
 #    print('\t', item['player'], '\n')
-    df_players = df_players.append(pd.DataFrame( item['player'], index=[ item['participantId'] ] ) )
-
+    df_players = df_players.append(pd.DataFrame( item['player'], index=[item['participantId']] ) )
 
 #print('RESULT:')
 #print(df_players)
@@ -85,6 +128,8 @@ for item in partIds:
 #    print(df_players[colname])
 #    print()
 
+
+#partIds = jsd['participantIdentities']
 #create sqlite3 database/table
 conn = sqlite3.connect('etlproject.db')
 c = conn.cursor()
@@ -92,11 +137,11 @@ c = conn.cursor()
 c.execute("CREATE TABLE IF NOT EXISTS participantIdentities (player text, participantId number)")
 conn.commit()
 
-df_players.to_sql('participantIdentities', conn, if_exists='replace', index=False)
+df_players.to_sql('participantIdentities', conn, if_exists='replace', index=True, index_label = 'participantId')
 
-c.execute('''
-SELECT * FROM participantIdentities
-        ''')
+#c.execute('''
+#SELECT * FROM participantIdentities
+#        ''')
 
-for row in c.fetchall():
-    print (row)
+#for row in c.fetchall():
+#    print (row)
